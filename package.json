@@ -1,0 +1,32 @@
+{
+  "name": "pipes-javascript-tracker",
+  "version": "1.0.0",
+  "description": "JavaScript tracker for Pipes",
+  "main": "pipes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pipes/pipes-javascript-tracker.git"
+  },
+  "keywords": [
+    "pipes",
+    "data",
+    "analytics",
+    "digital",
+    "analytics",
+    "web",
+    "analytics"
+  ],
+  "author": "Dimitri Tarasowski",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/pipes/pipes-javascript-tracker/issues"
+  },
+  "homepage": "https://github.com/pipes/pipes-javascript-tracker#readme",
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  },
+  "dependencies": {}
+}
