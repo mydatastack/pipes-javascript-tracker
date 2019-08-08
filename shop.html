@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Shop</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="tag.js"></script>
+</head>
+
+<body>
+  <h4>Navigation</h4>
+  <ul>
+    <a href="index.html"><li>Home</li></a>
+    <a href="shop.html"><li>Shop</li></a>
+  </ul>
+  <h2>Shop</h2>
+  <p>Welcome in my shop</p>
+  <button onclick="pipes.track('Shop event', {name: 'button', value: 'buy a product'})">Buy product</button>
+</body>
+  <script>
+    pipes.pageview('Shop', {title: 'Shop', url: 'shop.html'})
+  </script>
+
+</html>
+

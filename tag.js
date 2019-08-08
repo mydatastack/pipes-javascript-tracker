@@ -13,12 +13,16 @@
   pipes.init = false;
 
   pipes.commands = [
+    'identity',
+    'track',
     'pageview',
     'screenview',
-    'identity',
-    'event',
     'transaction',
-    'item'
+    'item',
+    'reset',
+    'user',
+    'track_link',
+    'track_form' 
   ]
 
   pipes.generate = function(method) {
@@ -46,8 +50,5 @@
   }
 
   pipes.load('./tracker.js', '30934533345')
-
-  pipes.pageview({name: 'first', id: 12345345})
-  pipes.identity({id: 'tarasowski', ts: 1565187068})
 
 })()

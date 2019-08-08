@@ -8,7 +8,7 @@ def incoming(host, port):
     """Open specified port and yield requests"""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.settimeout(10000000)
+   # sock.settimeout(10000000)
     sock.bind((host, port))
     sock.listen(0)
     try:

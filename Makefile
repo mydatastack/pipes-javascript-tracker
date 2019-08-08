@@ -3,4 +3,4 @@ develop:
 
 server:
 	@echo Starting local server under http://localhost:8888
-	@python ./test/server.py
+	@node ./test/server.js
