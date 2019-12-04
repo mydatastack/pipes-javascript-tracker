@@ -13,6 +13,7 @@ var page_search = '';
 var page_title = document.title;
 var page_url = window.location.href;
 var user_agent = navigator.userAgent;
+var ts = new Date().toISOString()
 
 console.log(
   page_path,
@@ -31,7 +32,7 @@ function send(payload, path) {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
       if (request.readyState == 4) {
-        console.log('0 = error', request.status)
+        console.log('request.status: ', request.status)
         console.log('DONE')
       }
     };
@@ -40,19 +41,57 @@ function send(payload, path) {
     request.send(JSON.stringify(payload))
 }
 
-pipes.pageview = function(name, data) {
-  var payload = {name: name, data}
-  send(payload, endpoint); 
-}
 pipes.identity = function(name, data) {
-  var payload = {name: name, data}
+  var payload = {name: name, data: data}
   send(payload, endpoint);
 }
 
 pipes.track = function(name, data) {
-  console.log(page_referrer)
-  var payload = {name: name, data}
+  var payload = {name: name, data: data}
   send(payload, endpoint)
+}
+
+pipes.pageview = function(name, data) {
+  var payload = {
+    name: name, 
+    data: data, 
+    timestamp: ts}
+  send(payload, endpoint); 
+}
+
+pipes.screenview = function(name, data) {
+  var payload = {name: name, data: data}
+  send(payload, endpoint); 
+}
+
+pipes.transaction = function(name, data) {
+  var payload = {name: name, data: data}
+  send(payload, endpoint); 
+}
+
+pipes.item = function(name, data) {
+  var payload = {name: name, data: data}
+  send(payload, endpoint); 
+}
+
+pipes.reset = function(name, data) {
+  var payload = {name: name, data: data}
+  send(payload, endpoint); 
+}
+
+pipes.user = function(name, data) {
+  var payload = {name: name, data: data}
+  send(payload, endpoint); 
+}
+
+pipes.track_link = function(name, data) {
+  var payload = {name: name, data: data}
+  send(payload, endpoint); 
+}
+
+pipes.track_form = function(name, data) {
+  var payload = {name: name, data: data}
+  send(payload, endpoint); 
 }
 
 // replay events from the queue
