@@ -50,6 +50,6 @@
     first.parentNode.insertBefore(script, first);
   }
 
-  pipes.load('./tracker.js', '30934533345')
+  pipes.load('./bundle.js', '30934533345')
 
 })()

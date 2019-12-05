@@ -1,3 +1,4 @@
+var cookie = require('./cookie')
 var endpoint = 'http://localhost:8888/'
 init = true
 
@@ -15,18 +16,34 @@ var page_url = window.location.href;
 var user_agent = navigator.userAgent;
 var ts = new Date().toISOString()
 
+function cookieExpiration() {
+  var d = new Date();
+  d.setTime(d.getTime() + (365*2*24*60*60*1000));
+  return d.toUTCString()
+}
+
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+}
+
+
+var cookieOptions = {
+  expires: cookieExpiration()
+}
+
+if (!cookie.get('pipes_anonymous_id')) cookie.set('pipes_anonymous_id', uuidv4(), cookieOptions)
+
 console.log(
   page_path,
   user_agent,
   page_url, 
   page_title,
   page_referrer
-
 )
 
-var context = function() {
-
-}
 
 function send(payload, path) {
     var request = new XMLHttpRequest();
