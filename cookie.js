@@ -10,7 +10,6 @@ function set(name, value, options) {
   if (options.maxage) {
     options.expires = new Date(+new Date + options.maxage)
   }
-  console.log(options)
 
   if (options.path) str += '; path=' + options.path;
   if (options.domain) str += '; domain=' + options.domain;
@@ -62,8 +61,15 @@ function decode(value) {
   }
 }
 
+function remove(name, date) {
+  var date = 'Max-Age=-99999999;';
+  var str = encode(name) + '=; ' + date
+  document.cookie = str;
+}
+
 
 module.exports = {
   set: set,
-  get: get
+  get: get,
+  remove: remove
 }

@@ -1,51 +1,145 @@
 var cookie = require('./cookie')
+var context = require('./context')
+var utils = require('./utils')
 var endpoint = 'http://localhost:8888/'
+var privacy = require('./privacy')
+
 init = true
+var anonymousId = false
+var doNotTrack = privacy.isDoNotTrackEnabled() ? true : false
+var pipesDisabled = privacy.isPipesDisabled() ? true : false 
 
-var campaign_name = '';
-var campaign_source = '';
-var campaign_medium = '';
-var campaign_term = '';
-var campaign_content = '';
-var page_path = window.location.pathname;
-var page_referrer = document.referrer;
-var ip = '0.0.0.0';
-var page_search = '';
-var page_title = document.title;
-var page_url = window.location.href;
-var user_agent = navigator.userAgent;
-var ts = new Date().toISOString()
+if (anonymousId == false) getAnonymousIdCookie()
 
-function cookieExpiration() {
-  var d = new Date();
-  d.setTime(d.getTime() + (365*2*24*60*60*1000));
-  return d.toUTCString()
-}
+function getAnonymousIdCookie() {
+  var cookieValue = cookie.get('pipes_anonymous_id')
+  if (cookieValue != undefined) {
+    anonymousId = cookieValue;
 
-function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
+  } else {
+    cookie.set('pipes_anonymous_id', 
+      utils.uuidv4(), 
+      { expires: utils.cookieExpiration(2) })
+  }
 }
 
 
-var cookieOptions = {
-  expires: cookieExpiration()
+function disablePipes() {
+  cookie.set('pipes_disabled', 
+    true, {
+    expires: utils.cookieExpiration(10)
+    })
 }
 
-if (!cookie.get('pipes_anonymous_id')) cookie.set('pipes_anonymous_id', uuidv4(), cookieOptions)
+pipes.page = function(name, properties) {
+  var payload = {
+    anonymousId: anonymousId,
+    type: "page",
+    name: name, 
+    properties: properties,
+    context: context,
+    sentAt: utils.timestamp(),
+    messageId: utils.uuidv4()
+  }
+  send(payload, endpoint); 
+}
 
-console.log(
-  page_path,
-  user_agent,
-  page_url, 
-  page_title,
-  page_referrer
-)
+pipes.screen = function(name, properties) {
+  var payload = {
+    anonymousId: anonymousId,
+    type: "screen",
+    name: name, 
+    properties: properties,
+    context: context,
+    sentAt: utils.timestamp(),
+    messageId: utils.uuidv4()
+  }
+  send(payload, endpoint); 
+}
 
+pipes.track = function(name, properties) {
+  var payload = {
+    anonymousId: anonymousId,
+    type: "track",
+    event: name, 
+    properties: properties, 
+    context: context,
+    sentAt: utils.timestamp(),
+    messageId: utils.uuidv4()
+  }
+  send(payload, endpoint)
+}
+
+pipes.identity = function(userId, properties) {
+  var payload = {
+    anonymousId: anonymousId,
+    userId: userId, 
+    type: 'identity',
+    properties: properties,
+    context: context,
+    sentAt: utils.timestamp(),
+    messageId: utils.uuidv4()
+  }
+  send(payload, endpoint);
+}
+
+
+pipes.trackLink = function(link, name, properties) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    pipes.track(name, Object.assign({}, properties, {
+          id: link.id,
+          href: link.href,
+          origin: link.origin,
+          text: link.text,
+          textContent: link.textContent
+        }) 
+      ) 
+    setTimeout(function() {
+      location.href = link.href
+    }, 300)
+  }, true)
+
+}
+
+function deconstructForm(formElement) {
+  var length = formElement.elements.length;
+  var elements = [];
+  var i;
+  for (i = 0; i < length; i++) {
+    elements.push({
+      type: formElement.elements[i].type,
+      name: formElement.elements[i].name,
+      value: formElement.elements[i].value
+  })
+  }
+  return elements
+}
+
+pipes.trackForm = function(form, name, properties) {
+  form.addEventListener('click', function(e) {
+    e.preventDefault();
+    pipes.track(name, Object.assign({}, properties,
+      {
+        elements: [deconstructForm(form)]
+      }))
+    setTimeout(function() {
+      location.href = form.href
+    }, 300)
+  }, true)
+
+}
+
+
+pipes.disable = function() {
+  disablePipes()
+
+}
 
 function send(payload, path) {
+  if (doNotTrack || pipesDisabled) {
+    return
+  }
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
       if (request.readyState == 4) {
@@ -58,65 +152,13 @@ function send(payload, path) {
     request.send(JSON.stringify(payload))
 }
 
-pipes.identity = function(name, data) {
-  var payload = {name: name, data: data}
-  send(payload, endpoint);
-}
-
-pipes.track = function(name, data) {
-  var payload = {name: name, data: data}
-  send(payload, endpoint)
-}
-
-pipes.pageview = function(name, data) {
-  var payload = {
-    name: name, 
-    data: data, 
-    timestamp: ts}
-  send(payload, endpoint); 
-}
-
-pipes.screenview = function(name, data) {
-  var payload = {name: name, data: data}
-  send(payload, endpoint); 
-}
-
-pipes.transaction = function(name, data) {
-  var payload = {name: name, data: data}
-  send(payload, endpoint); 
-}
-
-pipes.item = function(name, data) {
-  var payload = {name: name, data: data}
-  send(payload, endpoint); 
-}
-
-pipes.reset = function(name, data) {
-  var payload = {name: name, data: data}
-  send(payload, endpoint); 
-}
-
-pipes.user = function(name, data) {
-  var payload = {name: name, data: data}
-  send(payload, endpoint); 
-}
-
-pipes.track_link = function(name, data) {
-  var payload = {name: name, data: data}
-  send(payload, endpoint); 
-}
-
-pipes.track_form = function(name, data) {
-  var payload = {name: name, data: data}
-  send(payload, endpoint); 
-}
-
 // replay events from the queue
 for (i = 0; i < pipes.length; i++) {
   var key = pipes[i][0]
   var first = pipes[i][1]
   var second = pipes[i][2]
-  pipes[key](first, second)
+  var third = pipes[i][3]
+  pipes[key](first, second, third)
 }
 
 

@@ -15,14 +15,11 @@
   pipes.commands = [
     'identity',
     'track',
-    'pageview',
-    'screenview',
-    'transaction',
-    'item',
-    'reset',
-    'user',
-    'track_link',
-    'track_form' 
+    'page',
+    'screen',
+    'trackLink',
+    'trackForm',
+    'disable'
   ]
 
   pipes.generate = function(method) {

@@ -1,7 +1,7 @@
-develop:
+live-reload:
 	@npx live-server
 
-server:
+tracking-endpoint:
 	@node ./test/server.js
 
 bundle:
