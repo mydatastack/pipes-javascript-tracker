@@ -1,25 +1,102 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-var campaign_name = '';
-var campaign_source = '';
-var campaign_medium = '';
-var campaign_term = '';
-var campaign_content = '';
-var page_path = window.location.pathname;
-var page_referrer = document.referrer;
+var pagePath = window.location.pathname;
+var pageReferrer = document.referrer;
 var ip = '0.0.0.0';
-var page_search = '';
-var page_title = document.title;
-var page_url = window.location.href;
-var user_agent = navigator.userAgent;
+var pageSearch = '';
+var pageTitle = document.title;
+var pageUrl = window.location.href;
+var userAgent = navigator.userAgent;
+var sHeight = window.screen.width 
+var sWidht = window.screen.height 
+var sDensity = window.screen.density 
+
+function utmCheck(param) {
+  return param ? param : '';
+}
+
+function parseQueryString() {
+  var urlParams = new URLSearchParams(window.location.search);
+  return {
+    utm_source: utmCheck(urlParams.get('utm_source')),
+    utm_medium: utmCheck(urlParams.get('utm_medium')),
+    utm_campaign: utmCheck(urlParams.get('utm_campaign')),
+    utm_term: utmCheck(urlParams.get('utm_term')),
+    utm_content: utmCheck(urlParams.get('utm_content')),
+  }
+}
+
+function tmz() {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+function getLanguage() {
+  var l = navigator.language 
+    || navigator.browserLanguage
+    || navigator.systemLanguage
+    || navigator.userLanguage;
+  return l
+}
+
 
 var context = {
-  page_path: page_path,
-  page_referrer: page_referrer,
+  app: {
+    name: '',
+    version: '',
+    build: '',
+    namespace: ''
+  },
+  campaign: parseQueryString(),
+  device: {
+    id: '',
+    manufacturer: '',
+    model: '',
+    name: '',
+    type: '',
+    token: '',
+  },
   ip: ip,
-  page_search: page_search,
-  page_title: page_title,
-  page_url: page_url,
-  user_agent: user_agent
+  library: {
+    name: 'pipes.js',
+    version: '1.0'
+  },
+  locale: getLanguage(),
+  location: {
+    city: '',
+    country: '',
+    latitude: '',
+    longitude: '',
+    speed: 0
+  },
+  network: {
+    bluetooth: false,
+    carrier: '',
+    cellular: false,
+    wifi: false
+  },
+  os: {
+    name: '',
+    version: ''
+  },
+  page: {
+    path: pagePath,
+    referrer: pageReferrer,
+    search: pageSearch,
+    title: pageTitle,
+    url: pageUrl 
+  },
+  referrer: {
+    type: '',
+    name:'',
+    url: '',
+    link: ''
+  },
+  screen: {
+    height: sHeight,
+    width: sWidht,
+    density: sDensity
+  },
+  timezone: tmz(), 
+  userAgent: userAgent,
 }
 
 module.exports = context
@@ -110,8 +187,8 @@ var privacy = require('./privacy')
 
 init = true
 var anonymousId = false
-var doNotTrack = privacy.isDoNotTrackEnabled() ? true : false
-var pipesDisabled = privacy.isPipesDisabled() ? true : false 
+var doNotTrack = privacy.isDoNotTrackEnabled()
+var pipesDisabled = privacy.isPipesDisabled()
 
 if (anonymousId == false) getAnonymousIdCookie()
 
@@ -223,7 +300,7 @@ function deconstructForm(formElement) {
 pipes.trackForm = function(form, name, properties) {
   form.addEventListener('click', function(e) {
     e.preventDefault();
-    pipes.track(name, Object.assign({}, properties,
+    pipes.track(name, Object.assign({}, properties, context,
       {
         elements: [deconstructForm(form)]
       }))

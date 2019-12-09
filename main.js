@@ -6,8 +6,8 @@ var privacy = require('./privacy')
 
 init = true
 var anonymousId = false
-var doNotTrack = privacy.isDoNotTrackEnabled() ? true : false
-var pipesDisabled = privacy.isPipesDisabled() ? true : false 
+var doNotTrack = privacy.isDoNotTrackEnabled()
+var pipesDisabled = privacy.isPipesDisabled()
 
 if (anonymousId == false) getAnonymousIdCookie()
 
@@ -119,7 +119,7 @@ function deconstructForm(formElement) {
 pipes.trackForm = function(form, name, properties) {
   form.addEventListener('click', function(e) {
     e.preventDefault();
-    pipes.track(name, Object.assign({}, properties,
+    pipes.track(name, Object.assign({}, properties, context,
       {
         elements: [deconstructForm(form)]
       }))
