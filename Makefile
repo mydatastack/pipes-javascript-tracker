@@ -5,4 +5,4 @@ tracking-endpoint:
 	@node ./test/server.js
 
 bundle:
-	@npx watchify main.js -o bundle.js
+	@npx watchify pipes.js -o pipes.min.js

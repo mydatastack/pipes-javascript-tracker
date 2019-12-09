@@ -37,16 +37,15 @@
   }
 
   pipes.load = function(url, key) {
-    var apiKey = key
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;
-    script.src = url;
+    script.src = url + key + '/pipes.min.js';
 
     var first = document.getElementsByTagName('script')[0];
     first.parentNode.insertBefore(script, first);
   }
 
-  pipes.load('./bundle.js', '30934533345')
+  pipes.load('https://s3.eu-central-1.amazonaws.com/pipesdata.com-js-trackers/', 'dev')
 
 })()

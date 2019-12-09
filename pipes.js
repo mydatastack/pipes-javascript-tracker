@@ -1,7 +1,7 @@
 var cookie = require('./cookie')
 var context = require('./context')
 var utils = require('./utils')
-var endpoint = 'http://localhost:8888/'
+var endpoint = require('./config').endpoint
 var privacy = require('./privacy')
 
 init = true
@@ -119,7 +119,7 @@ function deconstructForm(formElement) {
 pipes.trackForm = function(form, name, properties) {
   form.addEventListener('click', function(e) {
     e.preventDefault();
-    pipes.track(name, Object.assign({}, properties, context,
+    pipes.track(name, Object.assign({}, properties, 
       {
         elements: [deconstructForm(form)]
       }))
@@ -152,7 +152,6 @@ function send(payload, path) {
     request.send(JSON.stringify(payload))
 }
 
-// replay events from the queue
 for (i = 0; i < pipes.length; i++) {
   var key = pipes[i][0]
   var first = pipes[i][1]
