@@ -1,4 +1,14 @@
 module.exports = {
-  endpoint: 'https://16vzxu7np2.execute-api.eu-central-1.amazonaws.com/dev',
-  key: 'api key'
+  trackingEndpoint: {
+    region: 'eu-central-1',
+    apiId: '16vzxu7np2',
+    path: 'dev',
+    key: 'api key'
+  },
+  s3ScriptLocation: {
+    region: 'eu-central-1',
+    bucket: 'pipesdata.com-js-trackers',
+    folder: '16vzxu7np2'
+  }
+
 }
