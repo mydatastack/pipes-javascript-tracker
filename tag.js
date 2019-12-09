@@ -1,13 +1,3 @@
-var config = require('./config')
-
-var scriptUrl = 'https://s3.' 
-  + config.s3ScriptLocation.region 
-  + './amazonaws.com/' 
-  + config.s3ScriptLocation.bucket 
-  + '/' 
-  + config.s3ScriptLocation.folder 
-  + '/pipes.min.js'
- 
 (function() {
   window.pipes = window.pipes || []
   var pipes = window.pipes;
@@ -31,7 +21,6 @@ var scriptUrl = 'https://s3.'
     'trackForm',
     'disable'
   ]
-
   pipes.generate = function(method) {
     return function() {
       var args = Array.prototype.slice.call(arguments)   
@@ -50,12 +39,12 @@ var scriptUrl = 'https://s3.'
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;
-    script.src = url; 
-
+    script.src = url 
     var first = document.getElementsByTagName('script')[0];
     first.parentNode.insertBefore(script, first);
   }
 
-  pipes.load(scriptUrl)
+  pipes.load('https://s3.eu-central-1.amazonaws.com/pipesdata.com-js-trackers/16vzxu7np2/pipes.min.js')
+
 
 })()

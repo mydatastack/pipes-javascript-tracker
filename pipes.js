@@ -1,13 +1,26 @@
 var cookie = require('./cookie')
 var context = require('./context')
 var utils = require('./utils')
-var endpoint = require('./config').endpoint
+var config = require('./config')
 var privacy = require('./privacy')
 
 init = true
 var anonymousId = false
 var doNotTrack = privacy.isDoNotTrackEnabled()
 var pipesDisabled = privacy.isPipesDisabled()
+var endpoint = constructEndpoint()
+
+function constructEndpoint() {
+  var region = config.trackingEndpoint.region
+  var apiId = config.trackingEndpoint.apiId
+  var path = config.trackingEndpoint.path
+  return 'https://' 
+    + apiId
+    + '.execute-api.'
+    + region
+    + '.amazonaws.com/'
+    + path
+}
 
 if (anonymousId == false) getAnonymousIdCookie()
 
@@ -41,7 +54,7 @@ pipes.page = function(name, properties) {
     sentAt: utils.timestamp(),
     messageId: utils.uuidv4()
   }
-  send(payload, endpoint); 
+  send(payload); 
 }
 
 pipes.screen = function(name, properties) {
@@ -54,7 +67,7 @@ pipes.screen = function(name, properties) {
     sentAt: utils.timestamp(),
     messageId: utils.uuidv4()
   }
-  send(payload, endpoint); 
+  send(payload); 
 }
 
 pipes.track = function(name, properties) {
@@ -67,7 +80,7 @@ pipes.track = function(name, properties) {
     sentAt: utils.timestamp(),
     messageId: utils.uuidv4()
   }
-  send(payload, endpoint)
+  send(payload)
 }
 
 pipes.identity = function(userId, properties) {
@@ -80,7 +93,7 @@ pipes.identity = function(userId, properties) {
     sentAt: utils.timestamp(),
     messageId: utils.uuidv4()
   }
-  send(payload, endpoint);
+  send(payload);
 }
 
 
@@ -136,20 +149,19 @@ pipes.disable = function() {
 
 }
 
-function send(payload, path) {
+function send(payload) {
   if (doNotTrack || pipesDisabled) {
     return
   }
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function() {
-      if (request.readyState == 4) {
-        console.log('request.status: ', request.status)
-        console.log('DONE')
-      }
-    };
-    request.open('POST', path, true);
-    request.setRequestHeader('Content-type', 'text/plain; charset=UTF-8');
-    request.send(JSON.stringify(payload))
+  var request = new XMLHttpRequest();
+  request.onreadystatechange = function() {
+    if (request.readyState == 4) {
+      //console.log('request.status: ', request.status)
+    }
+  };
+  request.open('POST', endpoint, true);
+  request.setRequestHeader('Content-type', 'text/plain; charset=UTF-8');
+  request.send(JSON.stringify(payload))
 }
 
 for (i = 0; i < pipes.length; i++) {
