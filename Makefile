@@ -24,9 +24,9 @@ bundle-tag:
 
 package:
 	@echo Packaging tag.js
-	@npx browserify tag.js -o ./build/tag.js
+	@npx browserify ./src/tag.js -o ./build/tag.min.js
 	@echo Packaging pipes.js
-	@npx browserify pipes.js -o ./build/pipes.min.js
+	@npx browserify ./src/pipes.js -o ./build/pipes.min.js
 
 upload:
 	@aws s3 sync ./build/ s3://$(s3_bucket)/$(s3_folder)/ 
