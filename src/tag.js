@@ -1,4 +1,9 @@
 (function() {
+  var config = require('./config.json')
+  var s3region = config.s3ScriptLocation.region;
+  var s3folder = config.s3ScriptLocation.folder; 
+  var s3bucket = config.s3ScriptLocation.bucket 
+
   window.pipes = window.pipes || []
   var pipes = window.pipes;
 
@@ -35,15 +40,15 @@
     pipes[key] = pipes.generate(key)
   }
 
-  pipes.load = function(url, key) {
+  pipes.load = function() {
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;
-    script.src = url 
+    script.src = 'https://s3.' + s3region + '.amazonaws.com/'+ s3bucket + '/' + s3folder + '/pipes.min.js' 
     var first = document.getElementsByTagName('script')[0];
     first.parentNode.insertBefore(script, first);
   }
   // link where the script is hosted
-  pipes.load('https://s3.eu-central-1.amazonaws.com/pipesdata.com-js-trackers/16vzxu7np2/pipes.min.js')
+  pipes.load()
 
 })()

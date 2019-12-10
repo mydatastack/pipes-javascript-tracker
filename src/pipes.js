@@ -1,7 +1,7 @@
 var cookie = require('./cookie')
 var context = require('./context')
 var utils = require('./utils')
-var config = require('./config')
+var config = require('./config.json')
 var privacy = require('./privacy')
 
 init = true
