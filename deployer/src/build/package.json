@@ -1,0 +1,25 @@
+{
+  "name": "pipes-tracker-deployment",
+  "version": "1.0.0",
+  "description": "Deployment package for the js tracker",
+  "main": "index.js",
+  "dependencies": {
+    "cfn-response": "^1.0.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pipes/pipes-tracker-deployment.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pipes/pipes-tracker-deployment/issues"
+  },
+  "homepage": "https://github.com/pipes/pipes-tracker-deployment#readme"
+}

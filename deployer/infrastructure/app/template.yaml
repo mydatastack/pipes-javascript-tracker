@@ -1,0 +1,84 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: JS tracker infra as code automatic deployment
+
+
+Parameters:
+  ExportStackName:
+    Description: The name of the stack that exports the values
+    Type: String
+    Default: Pipesdata
+
+Resources:
+  ScriptBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+
+  BuildFunction:
+      Type: AWS::Serverless::Function
+      Properties:
+        Handler: index.handler
+        CodeUri: ../functions/build/
+        MemorySize: 512 
+        Runtime: nodejs12.x
+        Timeout: 60
+        Policies:
+          - Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                Resource:
+                  Fn::Join:
+                    - ''
+                    - - Fn::GetAtt: [ScriptBucket, Arn]
+                      - '/*'
+        Environment:
+          Variables:
+            APIREGION:
+              Fn::ImportValue: 
+                Fn::Sub: '${ExportStackName}-ApiRegion'
+            APIID:
+              Fn::ImportValue: 
+                Fn::Sub: '${ExportStackName}-ApiId'
+            APIPATH:
+              Fn::ImportValue: 
+                Fn::Sub: '${ExportStackName}-ApiPath'
+            APIKEY:
+              Fn::ImportValue: 
+                Fn::Sub: '${ExportStackName}-ApiKey'
+            S3REGION:
+              Ref: AWS::Region
+            S3BUCKET:
+              Ref: ScriptBucket
+
+  LambdaInvocationCustomResource:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      CodeUri: ../functions/invoke/
+      Runtime: nodejs12.x 
+      Timeout: 60
+      MemorySize: 128
+      Policies:
+        - Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Action:
+                - lambda:InvokeAsync
+                - lambda:InvokeFunction
+              Resource:
+                - Fn::GetAtt: [BuildFunction, Arn]
+
+  CustomResourceBuildFunction:
+    Type: Custom::LambdaInvocationBuild
+    DependsOn:
+      - LambdaInvocationCustomResource
+      - BuildFunction
+    Properties:
+      ServiceToken:
+        Fn::GetAtt: [LambdaInvocationCustomResource, Arn]
+      FunctionName: 
+        Ref: BuildFunction
