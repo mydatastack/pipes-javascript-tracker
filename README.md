@@ -5,7 +5,7 @@ deployment package.
 
 **The following 4 steps should be run to configure the tracker:**
 
-1) The pipes core module needs to be deployed via Cloudformation
+1) The [pipes core module needs](https://github.com/pipes/pipes) to be deployed via Cloudformation
 2) Run `make deploy` to deploy and build the JavaScript tracker
 3) In the S3 bucket copy the content of the `tag.min.js` file
 4) The content of the `tag.min.js` should be placed inside the `<header>` or
