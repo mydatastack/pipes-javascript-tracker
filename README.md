@@ -3,7 +3,7 @@
 This module includes the JavaScript tracker and the automatic
 deployment package. 
 
-* The following 4 steps should be run to configure the tracker:
+**The following 4 steps should be run to configure the tracker:**
 
 1) The pipes core module needs to be deployed via Cloudformation
 2) Run `make deploy` to deploy and build the JavaScript tracker
@@ -11,7 +11,7 @@ deployment package.
 4) The content of the `tag.min.js` should be placed inside the `<header>` or
 into Google Tag Manager `Custom Html`
 
-* The following methods can be called to track your application:
+**The following methods can be called to track your application:**
 
 ```js
 // {...} means you can put anything you line inside the object - no fixed schema
@@ -26,6 +26,7 @@ pipes.screen('name', {...})
 pipes.track('name', {...})
 
 // user identification
+// should be called only once when the user logins, signups or registers
 pipes.identity('userId', {...})
 
 // tracking of link clicks 
