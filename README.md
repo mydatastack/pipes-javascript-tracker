@@ -14,6 +14,8 @@ into Google Tag Manager `Custom Html`
 * The following methods can be called to track your application:
 
 ```js
+// {...} means you can put anything you line inside the object - no fixed schema
+
 // tracking of pageviews
 pipes.page('name', {...})
 
@@ -35,3 +37,5 @@ pipes.trackForm(formElement, 'name', {...})
 // deactivation of pipes
 pipes.disable() 
 ```
+
+
