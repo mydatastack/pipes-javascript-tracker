@@ -3,6 +3,10 @@
 This module includes the JavaScript tracker and the automatic
 deployment package. 
 
+## Architecture Overview
+
+![architecture](./img/https://github.com/pipes/pipesdata.com/blob/master/docs/images/pipes-js-tracker-deployer.png)
+
 **The following 4 steps should be run to configure the tracker:**
 
 1) The [pipes core module needs](https://github.com/pipes/pipes) to be deployed via Cloudformation
