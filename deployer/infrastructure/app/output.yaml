@@ -23,7 +23,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: index.handler
-      CodeUri: s3://tarasowski-dev-js-tracker-cfn-artifacts/ec21274d5f4ce94a7982b49ac83ab804
+      CodeUri: s3://tarasowski-dev-js-tracker-cfn-artifacts/257d37ae16cad1258b52c68b79356755
       MemorySize: 512
       Runtime: nodejs12.x
       Timeout: 60

@@ -14,7 +14,7 @@ function set(name, value, options) {
   if (options.path) str += '; path=' + options.path;
   if (options.domain) str += '; domain=' + options.domain;
   if (options.expires) str += '; expires=' + options.expires;
-  if (options.secure) str += '; secure';
+  if (options.secure) str += '; Secure';
 
   document.cookie = str;
 }
