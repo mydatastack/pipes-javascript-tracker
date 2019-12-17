@@ -61,20 +61,6 @@ const buildP = async (input, output) => {
   return stdout
 }
 
-const build = (input, output) => {
-  return new Promise((resolve, reject) => {
-    const wp = spawn('./node_modules/.bin/browserify', [
-      input, 
-      '-o', 
-      output,
-    ])
-
-    wp.stdout.on('data', data => console.log('stdout:' + data))
-    wp.stderr.on('data', err => console.log('writeFile failed: ' + err) || reject(err))
-    wp.on('close', data => resolve('build finished'))
-  })
-}
-
 const uploadS3 = (filename, path, bucket, folder) => {
   return new Promise((resolve, reject) => {
   fs.readFile(path + filename, (err, data) => {
@@ -84,6 +70,7 @@ const uploadS3 = (filename, path, bucket, folder) => {
       Bucket: bucket,
       Key: folder + '/' + filename,
       Body: base64data,
+      ContentType: 'application/javascript',
       ACL: 'public-read'
     }, (err, data) => err ? reject(err) : resolve('files uploaded to 3 \n'))
   })
