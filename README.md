@@ -5,7 +5,7 @@ deployment package.
 
 ## Architecture Overview
 
-![architecture](https://github.com/pipes/pipesdata.com/blob/master/docs/images/pipes-js-tracker-deployer.png)
+![architecture](https://github.com/pipes/pipesdata.com/blob/master/docs/images/pipes-js.png)
 
 **The following 4 steps should be run to configure the tracker:**
 
