@@ -27,7 +27,9 @@ upload:
 
 # commands for the deployer
 ARTIFACTS_BUCKET := tarasowski-dev-js-tracker-cfn-artifacts
-STACKNAME := trs-local-tracker
+STACKNAME := trs-local-tracker-2
+STAGE := local
+NAME := pipes
 
 validate:
 	@aws cloudformation validate-template --template-body file://deployer/infrastructure/app/template.yaml
@@ -37,4 +39,4 @@ create_bucket:
 
 deploy: validate
 	@aws cloudformation package --template-file ./deployer/infrastructure/app/template.yaml --output-template-file ./deployer/infrastructure/app/output.yaml --s3-bucket $(ARTIFACTS_BUCKET) --region eu-central-1
-	@aws cloudformation deploy --template-file ./deployer/infrastructure/app/output.yaml --stack-name $(STACKNAME) --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --region eu-central-1
+	@aws cloudformation deploy --template-file ./deployer/infrastructure/app/output.yaml --stack-name $(STACKNAME) --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND --region eu-central-1 --parameter-overrides STAGE=$(STAGE) NAME=$(NAME)

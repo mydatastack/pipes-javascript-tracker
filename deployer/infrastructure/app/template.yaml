@@ -4,10 +4,18 @@ Description: JS tracker infra as code automatic deployment
 
 
 Parameters:
-  ExportStackName:
-    Description: The name of the stack that exports the values
+  Name:
     Type: String
-    Default: Pipesdata
+    Description: The name of the api
+    MinLength: 3
+    MaxLength: 30
+    Default: pipes-js
+  Stage:
+    Type: String
+    Description: Stage of the Tracker and API has to be the same
+    MinLength: 3
+    MaxLength: 20
+    Default: dev 
 
 Resources:
   ScriptBucket:
@@ -19,7 +27,7 @@ Resources:
       Type: AWS::Serverless::Function
       Properties:
         Handler: index.handler
-        CodeUri: ../functions/build/
+        CodeUri: ../../src/build
         MemorySize: 512 
         Runtime: nodejs12.x
         Timeout: 60
@@ -38,17 +46,13 @@ Resources:
         Environment:
           Variables:
             APIREGION:
-              Fn::ImportValue: 
-                Fn::Sub: '${ExportStackName}-ApiRegion'
+              Fn::Sub: '{{resolve:ssm:/applications/pipes/${Stage}/api-gateway/region:1}}'
             APIID:
-              Fn::ImportValue: 
-                Fn::Sub: '${ExportStackName}-ApiId'
+              Fn::Sub: '{{resolve:ssm:/applications/pipes/${Stage}/api-gateway/id:1}}'
             APIPATH:
-              Fn::ImportValue: 
-                Fn::Sub: '${ExportStackName}-ApiPath'
+              Fn::Sub: '{{resolve:ssm:/applications/pipes/${Stage}/api-gateway/path:1}}'
             APIKEY:
-              Fn::ImportValue: 
-                Fn::Sub: '${ExportStackName}-ApiKey'
+              Fn::Sub: '{{resolve:ssm:/applications/pipes/${Stage}/api-gateway/key:1}}'
             S3REGION:
               Ref: AWS::Region
             S3BUCKET:
@@ -58,7 +62,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: index.handler
-      CodeUri: ../functions/invoke/
+      CodeUri: ../../src/invoke
       Runtime: nodejs12.x 
       Timeout: 60
       MemorySize: 128

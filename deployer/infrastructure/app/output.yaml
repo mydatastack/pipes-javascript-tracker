@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: JS tracker infra as code automatic deployment
+Parameters:
+  Name:
+    Type: String
+    Description: The name of the api
+    MinLength: 3
+    MaxLength: 30
+    Default: pipes-js
+  Stage:
+    Type: String
+    Description: Stage of the Tracker and API has to be the same
+    MinLength: 3
+    MaxLength: 20
+    Default: dev
+Resources:
+  ScriptBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+  BuildFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      CodeUri: s3://tarasowski-dev-js-tracker-cfn-artifacts/ec21274d5f4ce94a7982b49ac83ab804
+      MemorySize: 512
+      Runtime: nodejs12.x
+      Timeout: 60
+      Policies:
+      - Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:PutObject
+          - s3:PutObjectAcl
+          Resource:
+            Fn::Join:
+            - ''
+            - - Fn::GetAtt:
+                - ScriptBucket
+                - Arn
+              - /*
+      Environment:
+        Variables:
+          APIREGION:
+            Fn::Sub: '{{resolve:ssm:/applications/pipes/${Stage}/api-gateway/region:1}}'
+          APIID:
+            Fn::Sub: '{{resolve:ssm:/applications/pipes/${Stage}/api-gateway/id:1}}'
+          APIPATH:
+            Fn::Sub: '{{resolve:ssm:/applications/pipes/${Stage}/api-gateway/path:1}}'
+          APIKEY:
+            Fn::Sub: '{{resolve:ssm:/applications/pipes/${Stage}/api-gateway/key:1}}'
+          S3REGION:
+            Ref: AWS::Region
+          S3BUCKET:
+            Ref: ScriptBucket
+  LambdaInvocationCustomResource:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      CodeUri: s3://tarasowski-dev-js-tracker-cfn-artifacts/85028b81a13895060f01dccce7e726ae
+      Runtime: nodejs12.x
+      Timeout: 60
+      MemorySize: 128
+      Policies:
+      - Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Action:
+          - lambda:InvokeAsync
+          - lambda:InvokeFunction
+          Resource:
+          - Fn::GetAtt:
+            - BuildFunction
+            - Arn
+  CustomResourceBuildFunction:
+    Type: Custom::LambdaInvocationBuild
+    DependsOn:
+    - LambdaInvocationCustomResource
+    - BuildFunction
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+        - LambdaInvocationCustomResource
+        - Arn
+      FunctionName:
+        Ref: BuildFunction

@@ -15,12 +15,12 @@ const s3Region = process.env.S3REGION || ''
 const s3Bucket = process.env.S3BUCKET || ''
 const s3Folder = apiId 
 
-const contextUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/src/context.js'
-const cookieUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/src/cookie.js'
-const pipesUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/src/pipes.js'
-const privacyUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/src/privacy.js'
-const tagUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/src/tag.js'
-const utilsUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/src/utils.js'
+const contextUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/js-tracker/src/context.js'
+const cookieUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/js-tracker/src/cookie.js'
+const pipesUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/js-tracker/src/pipes.js'
+const privacyUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/js-tracker/src/privacy.js'
+const tagUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/js-tracker/src/tag.js'
+const utilsUrl = 'https://raw.githubusercontent.com/pipes/pipes-javascript-tracker/master/js-tracker/src/utils.js'
 
 const downloadFiles = (url, dest, cb) => {
   const file = fs.createWriteStream(dest)
