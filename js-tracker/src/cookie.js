@@ -1,5 +1,3 @@
-// https://github.com/component/cookie/blob/master/index.js
-// https://github.com/segmentio/analytics.js-core/blob/master/lib/cookie.js
 
 function set(name, value, options) {
   var options = options || {}
